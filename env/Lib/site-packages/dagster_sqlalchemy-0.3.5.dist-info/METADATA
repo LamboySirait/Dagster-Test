@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: dagster-sqlalchemy
+Version: 0.3.5
+Summary: Utilities and examples for working with SQLAlchemy and dagster, an opinionated framework for expressing data pipelines
+Home-page: https://github.com/dagster-io/dagster
+Author: Elementl
+License: Apache-2.0
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: dagster
+Requires-Dist: dagstermill
+Requires-Dist: jinja2 (>=2.8)
+Requires-Dist: sqlalchemy (>=1.2.7)
+
+UNKNOWN
+
+

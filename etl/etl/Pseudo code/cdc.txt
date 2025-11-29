@@ -1,0 +1,45 @@
+# -----------------------------
+# 1. Simulate CDC Stream
+# -----------------------------
+# Read change events from source (JSON lines, Kafka, etc.)
+events = read_stream(source)
+
+# -----------------------------
+# 2. Process / Transform Events
+# -----------------------------
+for event in events:
+    # Flatten / normalize nested fields if needed
+    event['device_type'] = event['metadata']['device'] or 'Unknown'
+    event['promo_code'] = event['metadata']['promo'] or ''
+    
+    # Categorize amount
+    if event['amount'] >= 1000000:
+        event['amount_category'] = 'High Value'
+    elif event['amount'] >= 100000:
+        event['amount_category'] = 'Medium Value'
+    else:
+        event['amount_category'] = 'Low Value'
+    
+    # Add ingestion timestamp
+    event['ingestion_time'] = current_time()
+
+# -----------------------------
+# 3. Deduplicate Events
+# -----------------------------
+# Keep only the latest event per primary key (e.g., transaction_id)
+unique_events = deduplicate(events, key='transaction_id')
+
+# -----------------------------
+# 4. Filter Relevant Operations
+# -----------------------------
+# Only keep inserts and updates, skip deletes if not needed
+filtered_events = filter(unique_events, operation in ['insert', 'update'])
+
+# -----------------------------
+# 5. Load to Destination
+# -----------------------------
+try:
+    write_to_clickhouse(filtered_events)
+except Exception as e:
+    log_error(e)
+    save_to_dead_letter_queue(filtered_events)
